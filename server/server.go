@@ -35,6 +35,7 @@ import (
 	"github.com/dexidp/dex/connector/oidc"
 	"github.com/dexidp/dex/connector/saml"
 	"github.com/dexidp/dex/storage"
+	"github.com/coreos/dex/connector/pilt"
 )
 
 // LocalConnector is the local passwordDB connector which is an internal
@@ -446,6 +447,7 @@ var ConnectorsConfig = map[string]func() ConnectorConfig{
 	"linkedin":        func() ConnectorConfig { return new(linkedin.Config) },
 	"microsoft":       func() ConnectorConfig { return new(microsoft.Config) },
 	"bitbucket-cloud": func() ConnectorConfig { return new(bitbucketcloud.Config) },
+	"pilt":         func() ConnectorConfig { return new(pilt.Config) },
 	// Keep around for backwards compatibility.
 	"samlExperimental": func() ConnectorConfig { return new(saml.Config) },
 }
