@@ -26,6 +26,7 @@ import (
 	"github.com/coreos/dex/connector/oidc"
 	"github.com/coreos/dex/connector/saml"
 	"github.com/coreos/dex/storage"
+	"github.com/coreos/dex/connector/pilt"
 )
 
 // LocalConnector is the local passwordDB connector which is an internal
@@ -394,6 +395,7 @@ var ConnectorsConfig = map[string]func() ConnectorConfig{
 	"gitlab":       func() ConnectorConfig { return new(gitlab.Config) },
 	"oidc":         func() ConnectorConfig { return new(oidc.Config) },
 	"saml":         func() ConnectorConfig { return new(saml.Config) },
+	"pilt":         func() ConnectorConfig { return new(pilt.Config) },
 	// Keep around for backwards compatibility.
 	"samlExperimental": func() ConnectorConfig { return new(saml.Config) },
 }
