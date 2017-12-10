@@ -25,7 +25,7 @@ type Config struct {
 
 // Open returns a connector which can be used to login users through an upstream
 // Pilt provider.
-func (c *Config) Open(logger logrus.FieldLogger) (conn connector.Connector, err error) {
+func (c *Config) Open(id string, logger logrus.FieldLogger) (conn connector.Connector, err error) {
 	issuerUrl, err := url.Parse(c.Issuer);
 	if err != nil {
 		return "", fmt.Errorf("failed to parse issuerURL %q: %v", c.Issuer, err)

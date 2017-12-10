@@ -223,6 +223,7 @@ func (s *Server) handleConnectorLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	scopes := parseScopes(authReq.Scopes)
+	showBacklink := len(s.connectors) > 1
 
 	switch r.Method {
 	case "GET":
@@ -250,7 +251,7 @@ func (s *Server) handleConnectorLogin(w http.ResponseWriter, r *http.Request) {
 			}
 			http.Redirect(w, r, callbackURL, http.StatusFound)
 		case connector.PasswordConnector:
-			if err := s.templates.password(w, r.URL.String(), "", false); err != nil {
+			if err := s.templates.password(w, r.URL.String(), "", usernamePrompt(conn), false, showBacklink); err != nil {
 				s.logger.Errorf("Server template error: %v", err)
 			}
 		case connector.SAMLConnector:
@@ -298,7 +299,7 @@ func (s *Server) handleConnectorLogin(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if !ok {
-			if err := s.templates.password(w, r.URL.String(), username, true); err != nil {
+			if err := s.templates.password(w, r.URL.String(), username, usernamePrompt(passwordConnector), true, showBacklink); err != nil {
 				s.logger.Errorf("Server template error: %v", err)
 			}
 			return
@@ -343,6 +344,12 @@ func (s *Server) handleConnectorCallback(w http.ResponseWriter, r *http.Request)
 		}
 		s.logger.Errorf("Failed to get auth request: %v", err)
 		s.renderError(w, http.StatusInternalServerError, "Database error.")
+		return
+	}
+
+	if connID := mux.Vars(r)["connector"]; connID != "" && connID != authReq.ConnectorID {
+		s.logger.Errorf("Connector mismatch: authentication started with id %q, but callback for id %q was triggered", authReq.ConnectorID, connID)
+		s.renderError(w, http.StatusInternalServerError, "Requested resource does not exist.")
 		return
 	}
 
@@ -989,7 +996,7 @@ func (s *Server) writeAccessToken(w http.ResponseWriter, idToken, accessToken, r
 }
 
 func (s *Server) renderError(w http.ResponseWriter, status int, description string) {
-	if err := s.templates.err(w, http.StatusText(status), description); err != nil {
+	if err := s.templates.err(w, status, description); err != nil {
 		s.logger.Errorf("Server template error: %v", err)
 	}
 }
@@ -998,4 +1005,12 @@ func (s *Server) tokenErrHelper(w http.ResponseWriter, typ string, description s
 	if err := tokenErr(w, typ, description, statusCode); err != nil {
 		s.logger.Errorf("token error response: %v", err)
 	}
+}
+
+// Check for username prompt override from connector. Defaults to "Username".
+func usernamePrompt(conn connector.PasswordConnector) string {
+	if attr := conn.Prompt(); attr != "" {
+		return attr
+	}
+	return "Username"
 }

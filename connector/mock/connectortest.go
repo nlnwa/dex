@@ -69,7 +69,7 @@ func (m *Callback) Refresh(ctx context.Context, s connector.Scopes, identity con
 type CallbackConfig struct{}
 
 // Open returns an authentication strategy which requires no user interaction.
-func (c *CallbackConfig) Open(logger logrus.FieldLogger) (connector.Connector, error) {
+func (c *CallbackConfig) Open(id string, logger logrus.FieldLogger) (connector.Connector, error) {
 	return NewCallbackConnector(logger), nil
 }
 
@@ -81,7 +81,7 @@ type PasswordConfig struct {
 }
 
 // Open returns an authentication strategy which prompts for a predefined username and password.
-func (c *PasswordConfig) Open(logger logrus.FieldLogger) (connector.Connector, error) {
+func (c *PasswordConfig) Open(id string, logger logrus.FieldLogger) (connector.Connector, error) {
 	if c.Username == "" {
 		return nil, errors.New("no username supplied")
 	}
@@ -110,3 +110,5 @@ func (p passwordConnector) Login(ctx context.Context, s connector.Scopes, userna
 	}
 	return identity, false, nil
 }
+
+func (p passwordConnector) Prompt() string { return "" }

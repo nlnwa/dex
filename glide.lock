@@ -1,5 +1,5 @@
-hash: e83f57fea75d4a509d812fab12785599fdab16db950cc3738cec59a6c73f93af
-updated: 2017-07-25T13:48:39.899190846-07:00
+hash: aa8fb290b0e14af4bf4d4cae250ce66561c819a9cdd6447a0432de26f9216318
+updated: 2017-11-30T16:40:26.928155912-08:00
 imports:
 - name: github.com/beevik/etree
   version: 4cd0dd976db869f817248477718071a28e978df0
@@ -7,6 +7,17 @@ imports:
   version: 31611c0501c812f437d4861d87d117053967c955
   subpackages:
   - crdb
+- name: github.com/coreos/etcd
+  version: f1d7dd87da3e8feab4aaf675b8e29c6a5ed5f58b
+  subpackages:
+  - auth/authpb
+  - clientv3
+  - clientv3/namespace
+  - etcdserver/api/v3rpc/rpctypes
+  - etcdserver/etcdserverpb
+  - mvcc/mvccpb
+  - pkg/tlsutil
+  - pkg/transport
 - name: github.com/coreos/go-oidc
   version: be73733bb8cc830d0205609b95d125215f8e9c70
 - name: github.com/ghodss/yaml
@@ -14,11 +25,14 @@ imports:
 - name: github.com/go-sql-driver/mysql
   version: 0b58b37b664c21f3010e836f1b931e1d0b0b0685
 - name: github.com/golang/protobuf
-  version: 2bba0603135d7d7f5cb73b2125beeda19c09f4ef
+  version: 1e59b77b52bf8e4b449a57e6f79f21226d571845
   subpackages:
   - proto
   - protoc-gen-go
+  - protoc-gen-go/descriptor
+  - protoc-gen-go/generator
   - protoc-gen-go/grpc
+  - protoc-gen-go/plugin
   - ptypes/any
 - name: github.com/gorilla/context
   version: aed02d124ae4a0e94fea4541c8effd05bf0c8296
