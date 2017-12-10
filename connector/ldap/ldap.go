@@ -77,6 +77,11 @@ type Config struct {
 	BindDN string `json:"bindDN"`
 	BindPW string `json:"bindPW"`
 
+	// UsernamePrompt allows users to override the username attribute (displayed
+	// in the username/password prompt). If unset, the handler will use
+	// "Username".
+	UsernamePrompt string `json:"usernamePrompt"`
+
 	// User entry search configuration.
 	UserSearch struct {
 		// BsaeDN to start the search from. For example "cn=users,dc=example,dc=com"
@@ -153,7 +158,7 @@ func parseScope(s string) (int, bool) {
 }
 
 // Open returns an authentication strategy using LDAP.
-func (c *Config) Open(logger logrus.FieldLogger) (connector.Connector, error) {
+func (c *Config) Open(id string, logger logrus.FieldLogger) (connector.Connector, error) {
 	conn, err := c.OpenConnector(logger)
 	if err != nil {
 		return nil, err
@@ -544,4 +549,8 @@ func (c *ldapConnector) groups(ctx context.Context, user ldap.Entry) ([]string, 
 		groupNames = append(groupNames, name)
 	}
 	return groupNames, nil
+}
+
+func (c *ldapConnector) Prompt() string {
+	return c.UsernamePrompt
 }
