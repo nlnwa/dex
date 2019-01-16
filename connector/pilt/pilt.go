@@ -1,6 +1,5 @@
 package pilt
 
-
 import (
 	"context"
 	"fmt"
@@ -9,16 +8,16 @@ import (
 
 	"github.com/sirupsen/logrus"
 
+	"encoding/json"
 	"github.com/dexidp/dex/connector"
 	"io/ioutil"
-	"encoding/json"
 	"strings"
 )
 
 // Config holds configuration options for Pilt logins.
 type Config struct {
-	Issuer       string `json:"issuer"`
-	RedirectURI  string `json:"redirectURI"`
+	Issuer      string `json:"issuer"`
+	RedirectURI string `json:"redirectURI"`
 
 	Scopes []string `json:"scopes"` // defaults to "profile" and "email"
 }
@@ -26,7 +25,7 @@ type Config struct {
 // Open returns a connector which can be used to login users through an upstream
 // Pilt provider.
 func (c *Config) Open(id string, logger logrus.FieldLogger) (conn connector.Connector, err error) {
-	issuerUrl, err := url.Parse(c.Issuer);
+	issuerUrl, err := url.Parse(c.Issuer)
 	if err != nil {
 		return "", fmt.Errorf("failed to parse issuerURL %q: %v", c.Issuer, err)
 	}
@@ -47,7 +46,7 @@ func (c *Config) Open(id string, logger logrus.FieldLogger) (conn connector.Conn
 		authEndpoint:    authEndpoint.String(),
 		sessionEndpoint: sessionEndpoint.String(),
 		groupsEndpoint:  groupsEndpoint.String(),
-		logger:        logger,
+		logger:          logger,
 	}, nil
 }
 
@@ -61,10 +60,10 @@ type piltConnector struct {
 	authEndpoint    string
 	sessionEndpoint string
 	groupsEndpoint  string
-	ctx           context.Context
-	cancel        context.CancelFunc
-	logger        logrus.FieldLogger
-	hostedDomains []string
+	ctx             context.Context
+	cancel          context.CancelFunc
+	logger          logrus.FieldLogger
+	hostedDomains   []string
 }
 
 func (c *piltConnector) Close() error {
